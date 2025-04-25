@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>A Simple Calculator</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:600,700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<style>
+body {
+background: #f1f1f1;
+font-family: 'Open Sans', sans-serif;
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+margin: 0;
+}
+
+#calculator {
+width: 320px;
+background: white;
+border-radius: 10px;
+box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+padding: 20px;
+animation: fadeIn 1s ease-out;
+transform-origin: center;
+}
+
+@keyframes fadeIn {
+from {
+opacity: 0;
+transform: scale(0.9);
+}
+to {
+opacity: 1;
+transform: scale(1);
+}
+}
+
+#display {
+background: #eaeaea;
+border-radius: 5px;
+padding: 15px;
+font-size: 24px;
+text-align: right;
+margin-bottom: 10px;
+box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+}
+
+#keyboard {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 10px;
+}
+
+button {
+padding: 20px;
+font-size: 18px;
+border: none;
+background: #f4f4f4;
+border-radius: 5px;
+cursor: pointer;
+transition: background 0.3s ease;
+animation: popIn 0.5s ease;
+}
+
+@keyframes popIn {
+from {
+transform: scale(0.7);
+opacity: 0;
+}
+to {
+transform: scale(1);
+opacity: 1;
+}
+}
+
+button:hover {
+background: #ddd;
+}
+
+button:active {
+animation: press 0.1s;
+}
+
+@keyframes press {
+0% { transform: scale(1); }
+50% { transform: scale(0.95); }
+100% { transform: scale(1); }
+}
+
+.operator {
+background: #f9c74f;
+}
+
+.operator:hover {
+background: #f9844a;
+}
+
+.empty {
+background: transparent;
+pointer-events: none;
+}
+
+</style>
+
+<body>
+    <div id="container">
+        <div id="calculator">
+            <div id="display">0</div> <!-- Calculator Display -->
+
+            <div id="keyboard">
+                <button class="operator" id="clear">C</button>
+                <button class="operator" id="backspace">CE</button>
+                <button class="operator" id="%">%</button>
+                <button class="operator" id="/">&#247;</button>
+
+                <button class="number" id="7">7</button>
+                <button class="number" id="8">8</button>
+                <button class="number" id="9">9</button>
+                <button class="operator" id="*">&times;</button>
+
+                <button class="number" id="4">4</button>
+                <button class="number" id="5">5</button>
+                <button class="number" id="6">6</button>
+                <button class="operator" id="-">-</button>
+
+                <button class="number" id="1">1</button>
+                <button class="number" id="2">2</button>
+                <button class="number" id="3">3</button>
+                <button class="operator" id="+">+</button>
+
+                <button class="empty"></button>
+                <button class="number" id="0">0</button>
+                <button class="empty"></button>
+                <button class="operator" id="=">=</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
