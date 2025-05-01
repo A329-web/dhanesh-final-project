@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bank Tracker App</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 420px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: #333;
+        }
+
+        .balance {
+            font-size: 22px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+        }
+
+        .inc-exp-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0 20px;
+            background: #f6f6f6;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .income,
+        .expense {
+            text-align: center;
+            width: 48%;
+        }
+
+        .income h4,
+        .expense h4 {
+            margin: 0;
+            font-weight: 500;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .income p {
+            color: #2ecc71;
+            font-size: 18px;
+            margin: 5px 0 0;
+        }
+
+        .expense p {
+            color: #e74c3c;
+            font-size: 18px;
+            margin: 5px 0 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            max-height: 160px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        ul li {
+            background: #fefefe;
+            border-left: 5px solid #2ecc71;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: background 0.2s;
+        }
+
+        ul li.expense {
+            border-left-color: #e74c3c;
+        }
+
+        ul li:hover {
+            background: #f9f9f9;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 480px) {
+            .inc-exp-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .income,
+            .expense {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>💰 Bank Tracker</h2>
+        <div class="balance">
+            Balance: $<span id="balance">0.00</span>
+        </div>
+
+        <div class="inc-exp-container">
+            <div class="income">
+                <h4>Income</h4>
+                <p>$<span id="income">0.00</span></p>
+            </div>
+            <div class="expense">
+                <h4>Expense</h4>
+                <p>$<span id="expense">0.00</span></p>
+            </div>
+        </div>
+
+        <ul id="transactions"></ul>
+
+        <form id="form">
+            <input type="text" id="text" placeholder="Description (e.g. Salary, Rent)" required />
+            <input type="number" id="amount" placeholder="Amount (+/-)" required />
+            <button type="submit">➕ Add Transaction</button>
+        </form>
+    </div>
+
+    <script>
+        const balance = document.getElementById('balance');
+        const income = document.getElementById('income');
+        const expense = document.getElementById('expense');
+        const transactionsList = document.getElementById('transactions');
+        const form = document.getElementById('form');
+        const text = document.getElementById('text');
+        const amount = document.getElementById('amount');
+
+        let transactions = [];
+
+        function updateDOM() {
+            transactionsList.innerHTML = '';
+            let total = 0, inc = 0, exp = 0;
+
+            transactions.forEach(t => {
+                const sign = t.amount < 0 ? '-' : '+';
+                const li = document.createElement('li');
+                li.classList.add(t.amount < 0 ? 'expense' : 'income');
+                li.innerHTML = `
+          ${t.text} 
+          <span>${sign}$${Math.abs(t.amount).toFixed(2)}</span>
+        `;
+                transactionsList.appendChild(li);
+
+                total += t.amount;
+                if (t.amount > 0) inc += t.amount;
+                else exp += Math.abs(t.amount);
+            });
+
+            balance.innerText = total.toFixed(2);
+            income.innerText = inc.toFixed(2);
+            expense.innerText = exp.toFixed(2);
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newTransaction = {
+                text: text.value.trim(),
+                amount: +amount.value
+            };
+            if (newTransaction.text === '' || isNaN(newTransaction.amount)) return;
+
+            transactions.push(newTransaction);
+            text.value = '';
+            amount.value = '';
+            updateDOM();
+        });
+    </script>
+</body>
+
+</html>
